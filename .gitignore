@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+*.log
+.terraform/
+terraform.tfstate
+terraform.tfstate.*
+crash.log
+*.tar
+.terraform/
+terraform.tfstate
+terraform.tfstate.*

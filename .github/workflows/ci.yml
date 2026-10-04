@@ -1,0 +1,60 @@
+name: ObbyGate CI Security Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r app/requirements.txt
+          pip install bandit pip-audit
+
+      - name: Python security scan
+        run: |
+          bandit -r app
+          pip-audit -r app/requirements.txt
+
+      - name: Build Docker image
+        run: |
+          docker build -f docker/Dockerfile -t obbygate:${{ github.sha }} .
+
+      - name: Trivy vulnerability scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: "obbygate:${{ github.sha }}"
+          format: "table"
+          severity: "CRITICAL,HIGH"
+          exit-code: "1"
+
+      - name: Generate SBOM
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: "obbygate:${{ github.sha }}"
+          scan-type: "image"
+          format: "cyclonedx"
+          output: "obbygate-sbom.json"
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: obbygate-sbom
+          path: obbygate-sbom.json

@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: obbygate-ai
+  namespace: obbygate
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: obbygate-ai
+
+  template:
+    metadata:
+      labels:
+        app: obbygate-ai
+
+    spec:
+      containers:
+        - name: obbygate-ai
+          image: obbygate:0.2.0
+          imagePullPolicy: Never
+
+          command:
+            - uvicorn
+            - main:app
+            - --host
+            - 0.0.0.0
+            - --port
+            - "8000"
+
+          ports:
+            - containerPort: 8000
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+
+---
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: obbygate-ai-service
+  namespace: obbygate
+
+spec:
+  selector:
+    app: obbygate-ai
+
+  ports:
+    - port: 80
+      targetPort: 8000
+
+  type: ClusterIP
