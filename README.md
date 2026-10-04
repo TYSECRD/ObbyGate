@@ -1,5 +1,3 @@
-# ObbyGate
-
 ![ObbyGate Banner](./obbygate.png)
 
 ObbyGate is a hands-on DevSecOps security lab built to demonstrate cloud-native deployment, infrastructure as code, container hardening, software supply-chain security, observability, and secured AI workload concepts.
