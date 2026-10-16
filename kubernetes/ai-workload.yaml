@@ -18,6 +18,10 @@ spec:
         app: obbygate-ai
 
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+
       containers:
         - name: obbygate-ai
           image: obbygate:0.2.0
