@@ -12,3 +12,23 @@ crash.log
 .terraform/
 terraform.tfstate
 terraform.tfstate.*
+
+# Terraform local configuration and secrets
+*.tfvars
+*.tfvars.json
+*.tfplan
+*.tfstate
+*.tfstate.*
+*.tfbackend
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.tfstate.lock.info
+
+# Credentials and private keys
+.aws/
+*.pem
+*.key
+.env.*
+!.env.example
